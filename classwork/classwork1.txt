@@ -1,0 +1,110 @@
+Classwork 1
+Jeremy Goldberg
+Kevin McInerney
+Patrick Utz
+09.12.2019
+
+**** PROBLEM 1 ****
+** Part 1 **
+1. M <=> (D v P)
+2. R => (W v S)
+3. R <=> D
+4. F <=> P
+5. (W => (~S ^ ~F))
+   (S => (~W ^ ~F))
+   (F => (~W ^ ~S))  
+6. M ^ F
+
+** Part 2 **
+1. (M => (D v P)) ^ ((D v P) => M)
+   (~M v D v P) ^ (~(D v P) v M)
+   (~M v D v P) ^ ((~D ^ ~P) v M)
+   (~M v D v P) ^ (~D v M) ^ (~P v M)
+
+2. ~R v W v S
+
+3. (R => D) ^ (D => R)
+   (~R v D) ^ (~D v R)
+
+4. (F => P) ^ (P => F)
+   (~F v P) ^ (~P v F)
+
+5. (~W v ~S) ^ (~W v ~F) ^ (~S v ~F)
+   
+
+6. M ^ F
+
+** Part 3 **
+
+1. (~D ^ P) -> NOT -> (D v ~P)
+   (~D v M) ^ (D v ~P) >> (M v ~P)
+      
+
+2. (~P ^ D) -> NOT -> (P v ~D)
+
+Available clauses:
+1. (~M v D v P)
+2. (~D v M)
+3. (~P v M)
+4. (~R v W v S)
+5. (~R v D) 
+6. (~D v R)
+7. (~F v P)
+8. (~P v F)
+9. (~W v ~S)
+10. (~W v ~F)
+11. (~S v ~F)
+12. (M) 
+13. (F)
+
+Resolution:
+Query: ~D ^ P  <-- alpha
+       ~(~D ^ P)
+14.    (D v ~P) <-- negated query 
+
+15. (P) [13, 7]
+16. (~W) [13, 10]
+17. (~S) [13, 11]
+18. (~R v W) [17, 4]
+19. (~R) [16, 18]
+20. (~D) [6, 19]
+21. (~P) [14, 20]
+22. 0 [21, 15] --> empty set therefore 
+the knowledge base entails alpha (the query)
+
+
+
+**** PROBLEM 2 ****
+1. 
+
+Ex:
+
+KB = (A v C) ^ B
+
+Table:
+    A | B | C | (A v C) ^ B | ((A v C) ^ B) ^ ~C
+w0: T   T   T       T               F
+w1: T   T   F       T               T
+w2: T   F   T       F               F
+w3: T   F   F       F               F
+w4: F   T   T       T               F
+w5: F   T   F       F               F
+w6: F   F   T       F               F
+w7: F   F   F       F               F
+
+Resolution:
+Query --> C 
+KB = 
+1. A v C
+2. B
+-----------------------
+3. ~C <-- negated query 
+4. A [1, 3]
+
+M(A) >= M(A ^ B)
+
+As is shown above, the result of ANDing (conjoining) two clauses through the process of resolution always results in a clause with the same or fewer number of propositions. In the table, the original KB had three worlds pertaining to its model. Once the negated query was conjoined to the KB, the model shrank to one world following the rule M(KB) >= M(KB ^ ~query). Therefore resolution is a sound inference.
+
+2. In addition to the KB being in CNF, the KB must also not contain the empty set. This is due to the fact that if the KB contains the empty set, it will always be inconsistent for any given negated query. 
+
+3. Using Horn Clauses for resolution-based inference engines proves to be more efficient since the program only needs to take into account the single "positive" propositions in each clause. Therefore, the program only needs to iterate through each clause once thus reducing the Big-O to n instead of n^2 or worse. 
