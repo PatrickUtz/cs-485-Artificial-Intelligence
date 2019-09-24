@@ -1,12 +1,16 @@
 '''
 maze_knowledge_base.py
-
+Authors:
+Jeremy Goldberg
+Kevin McInerney
+Patrick Utz
 Specifies a simple, Conjunctive Normal Form Propositional
 Logic Knowledge Base for use in Grid Maze pathfinding problems
 with side-information.
 '''
 from maze_clause import MazeClause
 import unittest
+import itertools
 
 class MazeKnowledgeBase:
     
@@ -19,8 +23,7 @@ class MazeKnowledgeBase:
         Note: we expect that no clause added this way will ever
         make the KB inconsistent (you need not check for this)
         """
-        # TODO: This is currently implemented incorrectly; see
-        # spec for details!
+        self.clauses.add(clause)
         return
         
     def ask (self, query):
@@ -31,8 +34,29 @@ class MazeKnowledgeBase:
         # TODO: Implement resolution inference here!
         # This is currently implemented incorrectly; see
         # spec for details!
-        return False
+        
+        # create copy of clauses
+        temp_clauses = self.clauses.copy()
 
+        # negate query and add to set of cluases
+        for key in query.props:
+            query.props[key] = not query.props[key]
+        temp_clauses.add(query)
+        new_clauses = set()
+
+        while True:
+            # iterate through each pair
+            for pair in itertools.combinations(temp_clauses, 2):
+                resolved_clause = MazeClause.resolve(pair[0], pair[1])
+                if (len(resolved_clause) == 1):
+                    resolved_clause_check = resolved_clause.pop()
+                    if resolved_clause_check.is_empty():
+                        return True
+                    resolved_clause.add(resolved_clause_check)
+                    new_clauses.update(resolved_clause)
+            if new_clauses.issubset(temp_clauses):
+                return False
+            temp_clauses.update(new_clauses)
 
 class MazeKnowledgeBaseTests(unittest.TestCase):
     def test_mazekb1(self):

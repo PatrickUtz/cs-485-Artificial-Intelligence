@@ -1,15 +1,18 @@
 '''
 maze_clause.py
-
+Authors:
+Jeremy Goldberg
+Kevin McInerney
+Patrick Utz
 Specifies a Propositional Logic Clause formatted specifically
 for Grid Maze Pathfinding problems. Clauses are a disjunction of
 MazePropositions (2-tuples of (symbol, location)) mapped to
 their negated status in the sentence.
 '''
 import unittest
+import itertools
 
 class MazeClause:
-    
     def __init__(self, props):
         """
         Constructor parameterized by the propositions within this clause;
@@ -18,8 +21,19 @@ class MazeClause:
         """
         self.props = {}
         self.valid = False
-        # TODO: Process list of propositions to make a correctly
-        # formatted MazeClause
+        for prop in props:
+            # check to see if there is the same proposition 
+            if prop[0] in self.props:
+                # check to see if the other proposition has the opposite truth 
+                # value and therefore a valid sentence 
+                if self.props[prop[0]] != prop[1]:
+                    # print("valid!")
+                    self.valid = True
+                    self.props = {}
+                    return
+            else:
+                self.props[prop[0]] = prop[1]
+        return
     
     def get_prop(self, prop):
         """
@@ -28,9 +42,10 @@ class MazeClause:
           - True if the requested prop is positive in the clause
           - False if the requested prop is negated in the clause
         """
-        # TODO: This is currently implemented incorrectly; see
-        # spec for details!
-        return False
+        if prop in self.props:
+            return self.props[prop]
+        else: 
+            return None
     
     def is_valid(self):
         """
@@ -38,9 +53,7 @@ class MazeClause:
           - True if this clause is logically equivalent with True
           - False otherwise
         """
-        # TODO: This is currently implemented incorrectly; see
-        # spec for details!
-        return False
+        return self.valid
     
     def is_empty(self):
         """
@@ -49,9 +62,10 @@ class MazeClause:
           - False otherwise
         (NB: valid clauses are not empty)
         """
-        # TODO: This is currently implemented incorrectly; see
-        # spec for details!
-        return False
+        if self.valid or (len(self.props) > 0):
+            return False
+        else:
+            return True
     
     def __eq__(self, other):
         """
@@ -68,12 +82,6 @@ class MazeClause:
         # lookup in a set
         return hash(frozenset(self.props.items()))
     
-    # Hint: Specify a __str__ method for ease of debugging (this
-    # will allow you to "print" a MazeClause directly to inspect
-    # its composite literals)
-    # def __str__ (self):
-    #     return ""
-    
     @staticmethod
     def resolve(c1, c2):
         """
@@ -82,11 +90,26 @@ class MazeClause:
         of 0 or 1 MazeClause, but it being a set is convenient for the
         inference engine)
         """
+
         results = set()
-        # TODO: This is currently implemented incorrectly; see
-        # spec for details!
+        for prop in c1.props:
+            if prop in c2.props and c2.props[prop] != c1.props[prop]:
+                # same prop with opposite parity
+                # delete the two props
+                c1_copy = c1.props.copy()
+                c2_copy = c2.props.copy()
+                del c1_copy[prop]
+                del c2_copy[prop]
+                # combine the remaining props into one dict
+                # convert the dicts to a single list
+                all_clauses_list = itertools.chain(c1_copy.items(), c2_copy.items())
+                # create a new MazeClause obj with the list and convert its dict into a set
+                all_clause_obj = MazeClause(all_clauses_list)
+                if all_clause_obj.is_valid():
+                    return results
+                results.add(all_clause_obj)
+                return results
         return results
-    
 
 class MazeClauseTests(unittest.TestCase):
     def test_mazeprops1(self):
@@ -154,4 +177,3 @@ class MazeClauseTests(unittest.TestCase):
         
 if __name__ == "__main__":
     unittest.main()
-    
