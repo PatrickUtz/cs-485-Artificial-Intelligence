@@ -196,7 +196,7 @@ if __name__ == "__main__":
          "X..P.X",\
          "X@...X",\
          "XXXXXX"],
-        
+
         # Medium difficulty: Score > -30
         ["XXXXXXXXX",
          "X..PGP..X",\
@@ -217,5 +217,5 @@ if __name__ == "__main__":
     ]
     
     # Pick your difficulty!
-    env = Environment(mazes[0]) # Call with tick_length = 0 for instant games
+    env = Environment(mazes[1], tick_length = 0) # Call with tick_length = 0 for instant games
     env.start_mission()

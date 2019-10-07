@@ -15,7 +15,7 @@ class MazeProblem:
     # Static COST_MAP for maze components and the cost to move onto them
     # Any component not listed assumed to have a cost of 1
     # HINT: You can add block types to this!
-    COST_MAP = {Environment.PIT_BLOCK: Environment.PIT_PENALTY, Environment.SAFE_BLOCK: Environment.MOV_PENALTY}
+    COST_MAP = {Environment.PIT_BLOCK: Environment.PIT_PENALTY, Environment.SAFE_BLOCK: Environment.MOV_PENALTY, "U": 7}
     
     
     ##################################################################
